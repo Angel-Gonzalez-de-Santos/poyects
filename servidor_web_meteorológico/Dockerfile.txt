@@ -1,0 +1,18 @@
+
+# Usamos la imagen base de Python 3.8 sobre Alpine
+FROM python:3.8-alpine
+
+# Establecemos el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiamos el archivo requirements.txt al contenedor
+COPY requirements.txt requirements.txt
+
+# Instalamos las dependencias listadas en el requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiamos todo el contenido de la carpeta local al contenedor
+COPY . .
+
+# Especificamos el comando para ejecutar el script Python metadata.py al inicia>
+CMD ["python3", "funcion.py"]

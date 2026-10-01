@@ -1,0 +1,56 @@
+CREATE TABLE USUARIO (
+id_usuario CHAR(4) NOT NULL,
+nombre VARCHAR2(40) NOT NULL,
+email VARCHAR2(40) NULL,
+telefono NUMBER(9) NULL,
+ultimo_acceso DATE NOT NULL,
+cuota NUMBER (6,2) NOT NULL,
+tipo VARCHAR2(30) NOT NULL,
+invitador CHAR(4) NOT NULL,
+CONSTRAINT us_pk PRIMARY KEY (id_usuario),
+CONSTRAINT us_ak1 UNIQUE (email),
+CONSTRAINT us_ak2 UNIQUE (telefono),
+CONSTRAINT us_fk FOREIGN KEY(invitador) REFERENCES USUARIO(id_usuario), -- ON DELETE NO ACTION ON UPDATE CASCADE
+CONSTRAINT tel_em_us CHECK (email IS NOT NULL AND telefono IS NULL OR email IS NULL AND telefono IS NOT NULL),
+CONSTRAINT tip CHECK (tipo IN('G', 'PI', 'PD', 'PFAM'))
+);
+
+
+CREATE TABLE LISTA (
+descripcion VARCHAR2(40) NULL,
+num_lista NUMBER(2) NOT NULL,
+nombre VARCHAR2(40) NOT NULL,
+id_usuario CHAR(4) NOT NULL,
+CONSTRAINT lis_pk PRIMARY KEY (id_usuario, num_lista),
+CONSTRAINT lis_fk FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario) -- ON DELETE NO ACTION ON UPDATE CASCADE
+);
+
+CREATE TABLE MUSICO (
+id_musico CHAR(4) NOT NULL,
+nombre VARCHAR2(40) NOT NULL,
+banda CHAR(4) NOT NULL,
+CONSTRAINT mus_pk PRIMARY KEY (id_musico)
+);
+
+CREATE TABLE BANDA (
+id_artista CHAR(4) NOT NULL,
+nombre VARCHAR2(40) NOT NULL,
+pais_origen VARCHAR2(20) NULL,
+año_fundacion NUMBER(4, 0) NOT NULL,
+lider CHAR(4) not null,
+CONSTRAINT ban_pk PRIMARY KEY (id_artista),
+CONSTRAINT ban_ak1 UNIQUE (nombre),
+CONSTRAINT ban_ak2 UNIQUE(lider),
+CONSTRAINT ban_fk FOREIGN KEY (lider) REFERENCES MUSICO(id_musico) --ON DELETE NO ACTION ON UPDATE CASCADE
+);
+
+CREATE TABLE LISTA_CANCION(
+id_usuario CHAR(4) NOT NULL,
+num_lista NUMBER(2) NOT NULL,
+CONSTRAINT liscan_pk PRIMARY KEY (id_usuario, num_lista),
+CONSTRAINT liscan_fk FOREIGN KEY (id_usuario, num_lista) REFERENCES LISTA(id_usuario, num_lista) -- ON DELETE NO ACTION ON UPDATE CASCADE
+); 
+
+
+
+ALTER TABLE MUSICO CONSTRAINT musico_fk FOREIGN KEY (banda) REFERENCES BANDA(id_artista); -- ON DELETE NO ACTION ON UPDATE CASCADE
